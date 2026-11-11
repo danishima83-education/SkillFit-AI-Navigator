@@ -13,6 +13,8 @@ async function request(path, options = {}) {
 export const api = {
   health: () => request('/health'),
   skills: () => request('/skills'),
+  navigate: (body) => request('/navigate', { method: 'POST', body }),
+  photos: (keyword) => request(`/photos?${new URLSearchParams({ keyword })}`),
   chat: (body) => request('/chat', { method: 'POST', body }),
   resources: ({ search = '', category = '' } = {}) =>
     request(`/resources?${new URLSearchParams({ search, category })}`),
