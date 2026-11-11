@@ -3,12 +3,75 @@ import RoleCard from './RoleCard.jsx';
 export default function RoleDeck({ results, onAdjustFocus, onStartOver }) {
   const { summary, transferableSkills, roles } = results;
 
+  const handleExportRoadmap = () => {
+    const lines = [
+      '=================================================================',
+      'SKILLFIT AI NAVIGATOR — CAREER ROADMAP & ACTION PROMPTS',
+      'Team AIisMyFriend · Built for CodeSquad AI Community Sprint',
+      '=================================================================',
+      '',
+      'SUMMARY & TRANSFERABLE STRENGTHS:',
+      summary,
+      '',
+      'TRANSFERABLE COMPETENCIES:',
+      ...(transferableSkills || []).map((s) => `  ★ ${s}`),
+      '',
+      '=================================================================',
+      '3 AI-AUGMENTED CAREER DIRECTIONS',
+      '=================================================================',
+      '',
+    ];
+
+    roles.forEach((r, idx) => {
+      lines.push(
+        `[DIRECTION ${idx + 1}] ${r.roleTitle}`,
+        `O*NET Classification: ${r.onetCluster}`,
+        `Summary: ${r.summary}`,
+        '',
+        'Daily Workflows:',
+        ...r.keyTasks.map((t) => `  - ${t}`),
+        '',
+        'Your Human Edge (Why AI Cannot Replace You):',
+        `  ${r.humanEdge}`,
+        '',
+        'Verified Free AI Toolkit:',
+        ...r.aiTools.map((t) => `  - ${t.name} (${t.freeTier}): ${t.useCase}`),
+        '',
+        'READY-TO-USE ACTION PROMPT (Paste into ChatGPT / Claude):',
+        '-----------------------------------------------------------------',
+        r.starterPrompt,
+        '-----------------------------------------------------------------',
+        '',
+        '-----------------------------------------------------------------',
+        ''
+      );
+    });
+
+    lines.push(
+      'Exported from SkillFit AI Navigator on ' + new Date().toLocaleDateString(),
+      '100% Ephemeral Session Memory · Zero Personal Data Saved on Servers'
+    );
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SkillFit-Career-Roadmap-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <section className="results-section">
       <div className="results-header-banner">
         <div className="banner-top-row">
           <span className="results-badge">⚡ Career Direction Analysis</span>
           <div className="deck-actions-top">
+            <button type="button" className="action-btn-primary" onClick={handleExportRoadmap} title="Download clean text roadmap of your 3 directions">
+              📥 Export Roadmap (.txt)
+            </button>
             <button type="button" className="action-btn-outline" onClick={onAdjustFocus}>
               ✏️ Adjust My Focus
             </button>

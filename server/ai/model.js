@@ -27,7 +27,7 @@ export async function getModel() {
 }
 
 // 4-tier fallback cascade: 3.8 Flash -> 3.5 Flash Lite -> 3.1 Flash Lite
-export async function invokeWithCascade(messages) {
+export async function invokeWithCascade(messages, timeoutMs = 9000) {
   const cascadeList = [
     config.model || 'gemini-3.8-flash',
     'gemini-3.5-flash-lite',
@@ -41,7 +41,7 @@ export async function invokeWithCascade(messages) {
   for (const modelName of modelsToTry) {
     try {
       const model = await createChatModel(modelName);
-      const res = await model.invoke(messages);
+      const res = await invokeWithTimeout(model, messages, timeoutMs);
       return { response: res, modelUsed: modelName, isMock: false };
     } catch (err) {
       lastError = err;
@@ -51,6 +51,15 @@ export async function invokeWithCascade(messages) {
   }
 
   throw lastError || new Error('All models in cascade failed.');
+}
+
+function invokeWithTimeout(model, messages, timeoutMs) {
+  return Promise.race([
+    model.invoke(messages),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`Model response exceeded ${timeoutMs / 1000}s timeout`)), timeoutMs)
+    ),
+  ]);
 }
 
 // Turn provider errors into messages a student can act on.

@@ -181,6 +181,7 @@ export default function QuestionnaireIntake({ initialValues, onSubmit, isLoading
               <option value="Everyday user">Everyday User (Email, Google, Office)</option>
               <option value="Beginner">Beginner (Prefer simple, step-by-step tools)</option>
               <option value="Curious & adventurous">Tech Curious (Love experimenting with new apps)</option>
+              <option value="Power user / Tech nerd">Power User / Tech Nerd (Comfortable with prompts, settings & code)</option>
             </select>
           </div>
         </div>

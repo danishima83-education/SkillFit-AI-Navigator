@@ -452,6 +452,16 @@ body {
   transition: width 0.4s ease;
 }
 
+.progress-pulse {
+  animation: bar-glow 1.5s infinite ease-in-out;
+}
+
+@keyframes bar-glow {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px #10b981); }
+  100% { opacity: 0.8; }
+}
+
 .current-step-label {
   font-size: 0.88rem;
   color: var(--text-secondary);
