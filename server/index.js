@@ -31,7 +31,7 @@ if (config.isProduction) {
   const { createServer } = await import('vite');
   const vite = await createServer({
     root,
-    server: { middlewareMode: true, hmr: { server } },
+    server: { middlewareMode: true, hmr: { server }, allowedHosts: true },
     appType: 'spa',
   });
   app.use(vite.middlewares);
