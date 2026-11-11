@@ -12,11 +12,14 @@ export const config = {
   // Lower = steadier answers. Google recommends 1.0 for Gemini 3.x; we use a
   // little lower for a helpful-facts app. Change it and compare!
   temperature: Number(process.env.GEMINI_TEMPERATURE ?? 0.7),
-  maxOutputTokens: 600,
+  maxOutputTokens: 2048,
   forceMock: process.env.AI_MODE === 'mock',
 
   // ---- Database (Replit PostgreSQL) ----
   databaseUrl: process.env.DATABASE_URL || '',
+
+  // ---- Visual Assets (Unsplash API) ----
+  unsplashApiKey: process.env.UNSPLASH_API_KEY || process.env.UNPLASH_API_KEY || '',
 };
 
 // "live" when a key is set, "mock" otherwise, so the app runs on day one.

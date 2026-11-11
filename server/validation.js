@@ -40,3 +40,13 @@ export const ResourceQuery = z.object({
 
 // Turn zod's error into one friendly sentence.
 export const firstError = (result) => result.error.issues[0]?.message ?? 'Invalid request.';
+
+// ---- SkillFit AI Navigator Schemas ----
+export const NavigateRequest = z.object({
+  currentRole: z.string().trim().min(2, 'Please specify your current or past role.').max(120),
+  dailyTasks: z.string().trim().min(5, 'Describe at least one or two daily tasks you handle.').max(1500),
+  superpowers: z.string().trim().min(2, 'Tell us at least one thing you do well with people or problems.').max(500),
+  drainers: z.string().trim().min(2, 'Mention at least one repetitive task that drains your energy.').max(500),
+  workPreference: z.string().trim().max(50).optional().default('Hybrid'),
+  techComfort: z.string().trim().max(50).optional().default('Everyday user'),
+});

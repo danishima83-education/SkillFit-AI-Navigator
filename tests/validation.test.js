@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ChatRequest, NewResource, firstError } from '../server/validation.js';
+import { ChatRequest, NewResource, NavigateRequest, firstError } from '../server/validation.js';
 
 test('chat requests need a message', () => {
   assert.equal(ChatRequest.safeParse({ message: '   ' }).success, false);
@@ -26,4 +26,24 @@ test('ticket 002 examples give the exact messages', () => {
   const base = { name: 'Good Place', category: 'Food', description: 'Free meals on Fridays' };
   assert.equal(firstError(NewResource.safeParse({ ...base, name: 'A' })), 'Name is required.');
   assert.equal(firstError(NewResource.safeParse({ ...base, description: 'abc' })), 'Add a short description.');
+});
+
+test('navigate requests validate Marcus frontline intake fields', () => {
+  const validPayload = {
+    currentRole: 'Medical Receptionist',
+    dailyTasks: 'Check in patients, handle scheduling and billing disputes',
+    superpowers: 'De-escalating angry patients',
+    drainers: 'Manual data entry',
+    workPreference: 'Hybrid',
+    techComfort: 'Everyday user',
+  };
+  assert.equal(NavigateRequest.safeParse(validPayload).success, true);
+
+  const missingTasks = { ...validPayload, dailyTasks: ' ' };
+  assert.equal(NavigateRequest.safeParse(missingTasks).success, false);
+  assert.match(firstError(NavigateRequest.safeParse(missingTasks)), /daily tasks/);
+
+  const emptyRole = { ...validPayload, currentRole: '' };
+  assert.equal(NavigateRequest.safeParse(emptyRole).success, false);
+  assert.match(firstError(NavigateRequest.safeParse(emptyRole)), /current or past role/);
 });

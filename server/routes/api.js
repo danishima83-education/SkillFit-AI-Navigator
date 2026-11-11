@@ -5,8 +5,10 @@ import { CATEGORIES } from '../db/seed-data.js';
 import { addResource, listResources } from '../db/resources.js';
 import { runAgent } from '../agent/agent.js';
 import { loadSkills } from '../agent/skills.js';
+import { runNavigator } from '../agent/navigator.js';
+import { fetchRolePhoto } from '../services/unsplash.js';
 import { friendlyAiError } from '../ai/model.js';
-import { ChatRequest, NewResource, ResourceQuery, firstError } from '../validation.js';
+import { ChatRequest, NewResource, ResourceQuery, NavigateRequest, firstError } from '../validation.js';
 
 // Restaurant analogy: the waiter's routes. Every path here starts with /api.
 export const api = Router();
@@ -14,6 +16,29 @@ export const api = Router();
 // GET /api/health: is everything plugged in?
 api.get('/health', (_req, res) => {
   res.json({ ok: true, ai: aiMode(), model: config.model, database: hasDatabase ? 'postgres' : 'memory' });
+});
+
+// POST /api/navigate: Frontline career navigation engine (SkillFit AI Navigator)
+api.post('/navigate', async (req, res) => {
+  const parsed = NavigateRequest.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ ok: false, error: firstError(parsed) });
+    return;
+  }
+  try {
+    const result = await runNavigator(parsed.data);
+    res.json(result);
+  } catch (err) {
+    console.error('[navigate]', err);
+    res.status(500).json({ ok: false, error: friendlyAiError(err) });
+  }
+});
+
+// GET /api/photos: Unsplash photo proxy
+api.get('/photos', async (req, res) => {
+  const keyword = String(req.query.keyword || 'healthcare administration');
+  const photo = await fetchRolePhoto(keyword);
+  res.json({ ok: true, photo });
 });
 
 // GET /api/skills: the agent's skills, for the Skills panel

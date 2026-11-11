@@ -6,35 +6,32 @@
 // =============================================================
 
 export const project = {
-  teamName: 'TODO: Team Name',
-  appName: 'Community Compass',
-  tagline: 'Find help nearby, in plain language.',
+  teamName: 'AIisMyFriend',
+  appName: 'SkillFit AI Navigator',
+  tagline: 'Translate everyday frontline work into 3 AI-augmented career directions in under 5 minutes.',
 
   // One or two sentences. Who is hurting, and how?
   problemStatement:
-    'TODO: Families in our neighborhood struggle to find free food, health, and youth programs because the information is scattered and hard to read.',
+    'Frontline and administrative workers fear AI displacement and waste hours on generic career quizzes that suggest outdated clerical roles or irrelevant tech jobs instead of practical AI tool workflows.',
 
   // One specific person. Give them a name, an age, and a situation.
-  targetUser: 'TODO: Maria, 34, a parent of two who works evenings and searches on her phone.',
+  targetUser: 'Marcus, 38, medical receptionist and office coordinator at an outpatient clinic in Greater New York.',
 
-  community: 'TODO: Chicago, IL',
-  theme: 'TODO: Education Access / Global Health / Clean Water / Climate / Child Protection',
+  community: 'National / Frontline Workforce (Retail, Healthcare Admin, Hospitality)',
+  theme: 'Workforce Transition & Future of Work',
 
   // How you will know it works. Make it measurable.
-  successMeasure: 'TODO: A parent can find a matching resource in under 2 minutes.',
+  successMeasure: 'A frontline worker maps their daily tasks to 3 realistic AI-augmented roles with free tools and copyable prompts in under 5 minutes.',
 
   teamMembers: [
-    { name: 'TODO', role: 'Product owner (writes tickets)' },
-    { name: 'TODO', role: 'Front end (React)' },
-    { name: 'TODO', role: 'Back end (API + database)' },
-    { name: 'TODO', role: 'AI agent and skills' },
+    { name: 'Danilo Andiel', role: 'Product Owner, Architect & AI Engineer' },
   ],
 
   // The personality of your AI agent. Used in its system prompt.
   agent: {
-    name: 'Compass',
-    voice: 'warm, encouraging, and plain-spoken, like a helpful neighbor',
-    readingLevel: '6th grade',
+    name: 'SkillFit Navigator',
+    voice: 'sharp, encouraging, realistic, and practical like a veteran career strategist',
+    readingLevel: '8th grade',
   },
 };
 
