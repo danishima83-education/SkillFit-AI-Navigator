@@ -1,6 +1,6 @@
 import RoleCard from './RoleCard.jsx';
 
-export default function RoleDeck({ results, onAdjustFocus, onStartOver }) {
+export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStartOver }) {
   const { summary, transferableSkills, roles } = results;
 
   const handleExportRoadmap = () => {
@@ -80,6 +80,15 @@ export default function RoleDeck({ results, onAdjustFocus, onStartOver }) {
             </button>
           </div>
         </div>
+
+        {inputProfile?.currentRole && (
+          <div className="profile-context-anchor" aria-label="Contexto del perfil analizado">
+            <span className="anchor-label">Diagnóstico Basado En:</span>
+            <span className="anchor-pill">💼 {inputProfile.currentRole}</span>
+            <span className="anchor-pill">⚙️ {inputProfile.techComfort || 'Everyday user'}</span>
+            <span className="anchor-pill">📍 {inputProfile.workPreference || 'Hybrid'}</span>
+          </div>
+        )}
 
         <h2 className="results-headline">3 Realistic AI-Augmented Career Paths</h2>
         <p className="results-summary">{summary}</p>

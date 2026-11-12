@@ -1,15 +1,15 @@
 import { useState } from 'react';
+import { MARCUS_SAMPLE } from '../data/marcusProfile.js';
 
-const MARCUS_SAMPLE = {
-  currentRole: 'Medical Receptionist & Clinic Coordinator',
-  dailyTasks: 'Check in anxious patients, answer frantic phone queues, calm down angry billing disputes, juggle doctor schedules on paper, coordinate urgent walk-ins with nurses.',
-  superpowers: 'Staying calm when patients are scared or furious, remembering patient family names, spotting scheduling bottlenecks before they blow up.',
-  drainers: 'Entering insurance codes manually into the computer, making 40 repetitive appointment confirmation calls every afternoon.',
-  workPreference: 'Hybrid',
-  techComfort: 'Everyday user',
-};
-
-export default function QuestionnaireIntake({ initialValues, onSubmit, isLoading, error }) {
+export default function QuestionnaireIntake({
+  initialValues,
+  onSubmit,
+  onBackToHero,
+  onViewExistingResults,
+  hasExistingResults,
+  isLoading,
+  error,
+}) {
   const [formData, setFormData] = useState({
     currentRole: initialValues?.currentRole || '',
     dailyTasks: initialValues?.dailyTasks || '',
@@ -47,10 +47,34 @@ export default function QuestionnaireIntake({ initialValues, onSubmit, isLoading
   };
 
   return (
-    <section className="intake-section">
+    <section className="intake-section" aria-labelledby="intake-heading">
+      <div className="intake-top-nav">
+        {onBackToHero && (
+          <button
+            type="button"
+            className="btn-text-nav"
+            onClick={onBackToHero}
+            title="Volver a la carátula inicial"
+          >
+            ← Volver a la Carátula
+          </button>
+        )}
+
+        {hasExistingResults && onViewExistingResults && (
+          <button
+            type="button"
+            className="btn-text-nav btn-text-accent"
+            onClick={onViewExistingResults}
+            title="Volver a ver las tarjetas de rol generadas anteriormente"
+          >
+            Ver Resultados Generados →
+          </button>
+        )}
+      </div>
+
       <div className="intake-header">
         <div className="intake-title-group">
-          <h2>5-Minute Career Navigator</h2>
+          <h2 id="intake-heading">5-Minute Career Navigator</h2>
           <p>Tell us what you actually do all day. No tech buzzwords needed—honest, messy descriptions work best.</p>
         </div>
         <button
