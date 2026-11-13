@@ -82,8 +82,8 @@ export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStart
         </div>
 
         {inputProfile?.currentRole && (
-          <div className="profile-context-anchor" aria-label="Contexto del perfil analizado">
-            <span className="anchor-label">Diagnóstico Basado En:</span>
+          <div className="profile-context-anchor" aria-label="Analyzed profile context">
+            <span className="anchor-label">Diagnosis Based On:</span>
             <span className="anchor-pill">💼 {inputProfile.currentRole}</span>
             <span className="anchor-pill">⚙️ {inputProfile.techComfort || 'Everyday user'}</span>
             <span className="anchor-pill">📍 {inputProfile.workPreference || 'Hybrid'}</span>

@@ -54,9 +54,9 @@ export default function QuestionnaireIntake({
             type="button"
             className="btn-text-nav"
             onClick={onBackToHero}
-            title="Volver a la carátula inicial"
+            title="Return to Hero Home"
           >
-            ← Volver a la Carátula
+            ← Back to Home
           </button>
         )}
 
@@ -65,9 +65,9 @@ export default function QuestionnaireIntake({
             type="button"
             className="btn-text-nav btn-text-accent"
             onClick={onViewExistingResults}
-            title="Volver a ver las tarjetas de rol generadas anteriormente"
+            title="Return to previously generated role cards"
           >
-            Ver Resultados Generados →
+            View Generated Results →
           </button>
         )}
       </div>

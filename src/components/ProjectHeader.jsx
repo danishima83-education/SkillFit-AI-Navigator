@@ -11,7 +11,7 @@ export default function ProjectHeader({ health, onLogoClick }) {
             type="button"
             className="brand brand-btn"
             onClick={onLogoClick}
-            title={`${project.appName} — Volver al Inicio`}
+            title={`${project.appName} — Back to Home`}
           >
             <span className="brand-logo" aria-hidden="true">⚡</span>
             <span className="brand-title">{project.appName}</span>

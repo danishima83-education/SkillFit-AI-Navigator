@@ -45,7 +45,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
               onClick={onStartIntake}
               disabled={isSubmitting}
             >
-              <span>Mapear Mis Habilidades</span>
+              <span>Map My Skills</span>
               <span className="btn-arrow" aria-hidden="true">➔</span>
             </button>
 
@@ -54,17 +54,17 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
               className="btn-instant-demo"
               onClick={handleDemoClick}
               disabled={isSubmitting}
-              title="Carga el perfil de Marcus (Recepcionista Médico) y ejecuta la síntesis de IA en 1 clic"
+              title="Load Marcus's profile (Medical Receptionist) and run AI synthesis in 1 click"
             >
               {isSubmitting ? (
                 <>
                   <span className="spinner-inline" aria-hidden="true" />
-                  <span>Sintetizando con Gemini 3.8...</span>
+                  <span>Synthesizing with Gemini 3.8...</span>
                 </>
               ) : (
                 <>
                   <span className="demo-lightning" aria-hidden="true">⚡</span>
-                  <span>Probar Perfil de Marcus (Demo 1-Click)</span>
+                  <span>Try Marcus's Profile (1-Click Demo)</span>
                 </>
               )}
             </button>
@@ -92,7 +92,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
             className={`perspective-card-wrapper ${isHoveringTeaser ? 'card-hovered' : ''}`}
             onMouseEnter={() => setIsHoveringTeaser(true)}
             onMouseLeave={() => setIsHoveringTeaser(false)}
-            aria-label="Vista previa interactiva de la tarjeta de roles"
+            aria-label="Interactive role card preview"
           >
             <div className="teaser-card-halo" aria-hidden="true" />
 
@@ -103,7 +103,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
                   <span className="dot dot-yellow" />
                   <span className="dot dot-green" />
                 </div>
-                <span className="card-preview-badge">SÍNTESIS GENERADA · 3 ROLES</span>
+                <span className="card-preview-badge">SYNTHESIS READY · 3 ROLES</span>
               </div>
 
               <div className="card-preview-body">
@@ -118,11 +118,11 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
                 <div className="role-preview-workflows">
                   <div className="workflow-item">
                     <span className="workflow-check">✓</span>
-                    <span>Triage clínico de pacientes con asistencia de voz</span>
+                    <span>Voice-assisted clinical patient triage</span>
                   </div>
                   <div className="workflow-item">
                     <span className="workflow-check">✓</span>
-                    <span>Transcripción EHR con Whisper + SOAP formatting</span>
+                    <span>EHR transcription via Whisper + SOAP formatting</span>
                   </div>
                 </div>
 
@@ -134,13 +134,13 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
                 <div className="role-preview-footer">
                   <div className="human-edge-preview">
                     <span className="edge-spark">★</span>
-                    <span><strong>Human Edge:</strong> Empatía real ante pacientes en crisis</span>
+                    <span><strong>Human Edge:</strong> Real empathy for patients in crisis</span>
                   </div>
                 </div>
               </div>
 
               <div className="teaser-interactive-overlay">
-                <span className="teaser-hint-text">Vista previa de Diagnóstico · Clic en Demo para ver los 3 roles</span>
+                <span className="teaser-hint-text">Diagnostic Preview · Click Demo to view all 3 roles</span>
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
       </div>
 
       <div className="hero-bottom-ticker">
-        <div className="ticker-label">AUDIENCIA OBJETIVO:</div>
+        <div className="ticker-label">TARGET AUDIENCE:</div>
         <div className="ticker-text">{project.targetUser}</div>
         <div className="ticker-badge">AIISMYFRIEND · DANILO ANDIEL</div>
       </div>
