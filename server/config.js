@@ -8,7 +8,7 @@ export const config = {
 
   // ---- AI (Google Gemini through LangChain) ----
   geminiApiKey: process.env.GEMINI_API_KEY || '',
-  model: process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite',
+  model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
   // Lower = steadier answers. Google recommends 1.0 for Gemini 3.x; we use a
   // little lower for a helpful-facts app. Change it and compare!
   temperature: Number(process.env.GEMINI_TEMPERATURE ?? 0.7),

@@ -9,7 +9,7 @@ const INITIAL_STEPS = [
 ];
 
 const ONGOING_THOUGHTS = [
-  'Gemini 3.8 Flash is drafting your personalized Resume Translation prompt...',
+  'Gemini 3.5 Flash-Lite is drafting your personalized Resume Translation prompt...',
   'Formulating Interview Advantage talking points to prove your Human Edge...',
   'Assembling your Day-1 AI Toolkit onboarding workflow...',
   'Polishing your 3 custom career directions...',

@@ -26,10 +26,10 @@ export async function getModel() {
   return createChatModel(config.model);
 }
 
-// 4-tier fallback cascade: 3.8 Flash -> 3.5 Flash Lite -> 3.1 Flash Lite
+// Fast 3-tier fallback cascade: configured model (default 3.5 Flash Lite) -> 3.5 Flash Lite -> 3.1 Flash Lite
 export async function invokeWithCascade(messages, timeoutMs = 9000) {
   const cascadeList = [
-    config.model || 'gemini-3.8-flash',
+    config.model || 'gemini-3.5-flash-lite',
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
   ];

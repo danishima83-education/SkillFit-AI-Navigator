@@ -59,7 +59,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
               {isSubmitting ? (
                 <>
                   <span className="spinner-inline" aria-hidden="true" />
-                  <span>Synthesizing with Gemini 3.8...</span>
+                  <span>Synthesizing with Gemini Flash-Lite...</span>
                 </>
               ) : (
                 <>
@@ -77,7 +77,7 @@ export default function HeroSection({ onStartIntake, onQuickDemo, isSubmitting, 
             </div>
             <div className="feature-tag">
               <span className="tag-icon">⚡</span>
-              <span><strong>Gemini 3.8 Flash</strong> Synthesis</span>
+              <span><strong>Gemini 3.5 Flash-Lite</strong> Synthesis</span>
             </div>
             <div className="feature-tag">
               <span className="tag-icon">🔒</span>
