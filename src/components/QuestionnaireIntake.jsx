@@ -34,12 +34,12 @@ export default function QuestionnaireIntake({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.currentRole.trim()) {
-      setValidationError('Please tell us your current or recent job title.');
+    if (formData.currentRole.trim().length < 2) {
+      setValidationError('Please tell us your current or recent job title (at least 2 characters).');
       return;
     }
-    if (!formData.dailyTasks.trim() || formData.dailyTasks.trim().length < 5) {
-      setValidationError('Please describe at least one or two daily tasks you do.');
+    if (formData.dailyTasks.trim().length < 5) {
+      setValidationError('Please describe at least one or two daily tasks you do (at least 5 characters).');
       return;
     }
     setValidationError('');
@@ -109,6 +109,7 @@ export default function QuestionnaireIntake({
             value={formData.currentRole}
             onChange={handleChange}
             disabled={isLoading}
+            maxLength={120}
             required
           />
         </div>
@@ -128,6 +129,7 @@ export default function QuestionnaireIntake({
             value={formData.dailyTasks}
             onChange={handleChange}
             disabled={isLoading}
+            maxLength={1500}
             required
           />
         </div>
@@ -147,6 +149,7 @@ export default function QuestionnaireIntake({
             value={formData.superpowers}
             onChange={handleChange}
             disabled={isLoading}
+            maxLength={500}
           />
         </div>
 
@@ -165,6 +168,7 @@ export default function QuestionnaireIntake({
             value={formData.drainers}
             onChange={handleChange}
             disabled={isLoading}
+            maxLength={500}
           />
         </div>
 

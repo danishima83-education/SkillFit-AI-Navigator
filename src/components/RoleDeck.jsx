@@ -1,7 +1,9 @@
 import RoleCard from './RoleCard.jsx';
 
-export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStartOver }) {
-  const { summary, transferableSkills, roles } = results;
+export default function RoleDeck({ results, inputProfile, contingencyNotice, onAdjustFocus, onStartOver }) {
+  const summary = results?.summary || '';
+  const transferableSkills = Array.isArray(results?.transferableSkills) ? results.transferableSkills : [];
+  const roles = Array.isArray(results?.roles) ? results.roles.filter(Boolean) : [];
 
   const handleExportRoadmap = () => {
     const lines = [
@@ -14,7 +16,7 @@ export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStart
       summary,
       '',
       'TRANSFERABLE COMPETENCIES:',
-      ...(transferableSkills || []).map((s) => `  ★ ${s}`),
+      ...transferableSkills.map((s) => `  ★ ${s}`),
       '',
       '=================================================================',
       '3 AI-AUGMENTED CAREER DIRECTIONS',
@@ -23,23 +25,25 @@ export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStart
     ];
 
     roles.forEach((r, idx) => {
+      const tasks = Array.isArray(r.keyTasks) ? r.keyTasks : [];
+      const tools = Array.isArray(r.aiTools) ? r.aiTools : [];
       lines.push(
-        `[DIRECTION ${idx + 1}] ${r.roleTitle}`,
-        `O*NET Classification: ${r.onetCluster}`,
-        `Summary: ${r.summary}`,
+        `[DIRECTION ${idx + 1}] ${r.roleTitle || 'Career Direction'}`,
+        `O*NET Classification: ${r.onetCluster || 'N/A'}`,
+        `Summary: ${r.summary || ''}`,
         '',
         'Daily Workflows:',
-        ...r.keyTasks.map((t) => `  - ${t}`),
+        ...tasks.map((t) => `  - ${t}`),
         '',
         'Your Human Edge (Why AI Cannot Replace You):',
-        `  ${r.humanEdge}`,
+        `  ${r.humanEdge || ''}`,
         '',
         'Verified Free AI Toolkit:',
-        ...r.aiTools.map((t) => `  - ${t.name} (${t.freeTier}): ${t.useCase}`),
+        ...tools.map((t) => `  - ${t?.name || 'AI Tool'} (${t?.freeTier || 'Free'}): ${t?.useCase || ''}`),
         '',
         'READY-TO-USE ACTION PROMPT (Paste into ChatGPT / Claude):',
         '-----------------------------------------------------------------',
-        r.starterPrompt,
+        r.starterPrompt || '',
         '-----------------------------------------------------------------',
         '',
         '-----------------------------------------------------------------',
@@ -65,6 +69,13 @@ export default function RoleDeck({ results, inputProfile, onAdjustFocus, onStart
 
   return (
     <section className="results-section">
+      {contingencyNotice && (
+        <div className="contingency-banner" role="status">
+          <span aria-hidden="true">ℹ️</span>
+          <span>{contingencyNotice}</span>
+        </div>
+      )}
+
       <div className="results-header-banner">
         <div className="banner-top-row">
           <span className="results-badge">⚡ Career Direction Analysis</span>

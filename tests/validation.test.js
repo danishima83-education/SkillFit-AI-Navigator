@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ChatRequest, NewResource, NavigateRequest, firstError } from '../server/validation.js';
+import { ChatRequest, NewResource, NavigateRequest, NavigatorOutput, firstError } from '../server/validation.js';
 
 test('chat requests need a message', () => {
   assert.equal(ChatRequest.safeParse({ message: '   ' }).success, false);
@@ -46,4 +46,20 @@ test('navigate requests validate Marcus frontline intake fields', () => {
   const emptyRole = { ...validPayload, currentRole: '' };
   assert.equal(NavigateRequest.safeParse(emptyRole).success, false);
   assert.match(firstError(NavigateRequest.safeParse(emptyRole)), /current or past role/);
+});
+
+test('navigate requests allow optional superpowers/drainers and validate LLM output schema', () => {
+  const minimal = NavigateRequest.safeParse({
+    currentRole: 'Cashier',
+    dailyTasks: 'Handle register transactions and customer returns',
+  });
+  assert.equal(minimal.success, true);
+  assert.equal(minimal.data.superpowers, '');
+  assert.equal(minimal.data.drainers, '');
+
+  const badLlmOutput = NavigatorOutput.safeParse({
+    summary: 'Valid summary text here.',
+    roles: [{ roleTitle: 'Test', summary: 'Missing keyTasks and humanEdge' }],
+  });
+  assert.equal(badLlmOutput.success, false);
 });

@@ -3,102 +3,18 @@ import { aiMode } from '../config.js';
 import { invokeWithCascade } from '../ai/model.js';
 import { loadSkills } from './skills.js';
 import { fetchRolePhoto } from '../services/unsplash.js';
+import { NavigatorOutput, firstError } from '../validation.js';
+import { MARCUS_GOLDEN_MASTER } from '../../shared/marcus.fixture.js';
 
-// Deterministic mock data for Marcus (Medical Receptionist, Greater New York)
-export const MOCK_MARCUS_RESULTS = {
-  summary: 'Your frontline experience balancing patient triage, frantic phone queues, and billing conflicts demonstrates high emotional resilience, logistical coordination, and fast problem-solving. AI handles the rote transcription and form-filling, amplifying your human judgment.',
-  transferableSkills: [
-    'High-pressure de-escalation and patient rapport',
-    'Cross-departmental schedule and provider coordination',
-    'Complex insurance authorization and dispute triage',
-  ],
-  roles: [
-    {
-      id: 'role-1',
-      roleTitle: 'AI-Augmented Patient Intake Coordinator',
-      onetCluster: '43-4171.00 - Healthcare Support & Client Intake',
-      summary: 'Streamlines walk-in check-ins and clinical triage records using automated speech-to-text intake templates, cutting registration backlog by 60%.',
-      keyTasks: [
-        'Manage lobby check-in flow and identify urgent patient symptoms for immediate nurse review',
-        'Audit AI-transcribed intake audio notes for clinical terminology accuracy',
-        'Resolve insurance coverage discrepancies before patients enter exam rooms',
-      ],
-      humanEdge: 'Calming an anxious elderly patient or de-escalating a furious family member in the waiting room requires authentic human empathy, body language reading, and situational judgment that no automated system can provide.',
-      aiTools: [
-        {
-          name: 'OpenAI Whisper',
-          freeTier: 'Free open-source / Web tier',
-          useCase: 'Converts spoken intake interviews and voicemail triage into organized draft notes.',
-        },
-        {
-          name: 'ChatGPT Free',
-          freeTier: '100% Free tier',
-          useCase: 'Auto-formats raw patient responses into standard SOAP intake templates in seconds.',
-        },
-      ],
-      starterPrompt: 'I have 8 years of experience as a Medical Receptionist managing busy outpatient check-ins and patient triage. I am targeting an AI-Augmented Patient Intake Coordinator role. Help me rewrite my resume summary and 3 bullet points to highlight how my patient empathy and automated EHR transcription oversight qualify me for this position.',
-      imageKeyword: 'medical clinic reception',
-    },
-    {
-      id: 'role-2',
-      roleTitle: 'Medical Records & AI Documentation Specialist',
-      onetCluster: '29-9021.00 - Health Information Specialists',
-      summary: 'Bridging healthcare providers and billing databases by reviewing AI-extracted diagnosis codes and coordinating prior authorizations.',
-      keyTasks: [
-        'Validate automated EHR (Electronic Health Record) clinical summaries against physician audio logs',
-        'Draft and submit insurance pre-authorization appeal packets using structured LLM templates',
-        'Maintain strict patient privacy compliance (HIPAA) during record digitization',
-      ],
-      humanEdge: 'Discerning clinical context—such as catching contradictory doctor notes or unstated patient symptoms—demands trained human skepticism and medical ethics that automated extraction models routinely miss.',
-      aiTools: [
-        {
-          name: 'Claude 3.5 Sonnet (Free)',
-          freeTier: 'Free web tier with daily quota',
-          useCase: 'Synthesizes dense, multi-page diagnostic records into clean insurance appeal summaries.',
-        },
-        {
-          name: 'Gemini 2.5 Flash Free',
-          freeTier: 'Free tier via Google AI Studio',
-          useCase: 'Extracts billing codes and procedure dates from scanned medical referral letters.',
-        },
-      ],
-      starterPrompt: 'I am preparing for an interview as a Health Information & AI Documentation Specialist coming from a clinic front desk background. My core human strength is catching conflicting doctor notes and upholding patient privacy ethics. Draft 3 persuasive interview talking points explaining why human clinical judgment is indispensable alongside automated AI documentation tools.',
-      imageKeyword: 'electronic medical records',
-    },
-    {
-      id: 'role-3',
-      roleTitle: 'Clinical Flow & Patient Scheduling Strategist',
-      onetCluster: '43-6013.00 - Medical Administrative Coordinators',
-      summary: 'Optimizes outpatient provider calendars and minimizes appointment no-shows using predictive booking workflows and automated multilingual patient messaging.',
-      keyTasks: [
-        'Coordinate complex multi-doctor referral schedules across outpatient clinics',
-        'Configure automated, personalized SMS and email appointment reminders using AI templates',
-        'Analyze clinic arrival patterns to prevent provider overbooking and lobby crowding',
-      ],
-      humanEdge: 'Navigating physician scheduling quirks, accommodating emergency walk-ins, and reassuring vulnerable patients over the phone requires deep interpersonal diplomacy and organizational trust.',
-      aiTools: [
-        {
-          name: 'Google Workspace Gemini / Copilot',
-          freeTier: 'Free tier / standard add-on',
-          useCase: 'Identifies scheduling overlaps across multiple physician calendars and drafts email updates.',
-        },
-        {
-          name: 'Perplexity Free',
-          freeTier: '100% Free tier',
-          useCase: 'Quickly verifies insurance policy guidelines and specialty clinic referral requirements.',
-        },
-      ],
-      starterPrompt: 'I want to transition into an Outpatient Flow & Patient Scheduling Strategist role. I am planning to use free AI tools like Google Workspace AI templates and OpenAI Whisper to streamline clinic operations. Outline a 30-day workflow strategy for using these tools to reduce appointment no-shows without overloading doctors.',
-      imageKeyword: 'hospital administration team',
-    },
-  ],
-};
+// Single canonical fallback/mock fixture shared with client Golden Master
+export const MOCK_MARCUS_RESULTS = MARCUS_GOLDEN_MASTER;
 
 export async function runNavigator(intakeData) {
   const skills = await loadSkills();
   const guardSkill = skills.get('safety-guardrail');
 
-  // Scrub personal details from freeform fields
+  // Scrub personal details from all freeform intake fields
+  const cleanRole = guardSkill.tool.run({ message: intakeData.currentRole || '' }).redacted;
   const cleanDaily = guardSkill.tool.run({ message: intakeData.dailyTasks || '' }).redacted;
   const cleanSuperpowers = guardSkill.tool.run({ message: intakeData.superpowers || '' }).redacted;
   const cleanDrainers = guardSkill.tool.run({ message: intakeData.drainers || '' }).redacted;
@@ -148,10 +64,10 @@ export async function runNavigator(intakeData) {
     ].join('\n');
 
     const userPrompt = [
-      `Current/Past Role: ${intakeData.currentRole}`,
+      `Current/Past Role: ${cleanRole}`,
       `Everyday Work Tasks: ${cleanDaily}`,
-      `Natural Superpowers & Strengths: ${cleanSuperpowers}`,
-      `Repetitive Draining Tasks: ${cleanDrainers}`,
+      `Natural Superpowers & Strengths: ${cleanSuperpowers || 'Not specified'}`,
+      `Repetitive Draining Tasks: ${cleanDrainers || 'Not specified'}`,
       `Work Preference: ${intakeData.workPreference || 'Hybrid'}`,
       `Technology Comfort Level: ${intakeData.techComfort || 'Everyday user'}`,
     ].join('\n');
@@ -163,7 +79,12 @@ export async function runNavigator(intakeData) {
       ]);
       modelUsed = used;
       const rawText = cleanJsonText(response.content);
-      parsedResults = JSON.parse(rawText);
+      const parsed = JSON.parse(rawText);
+      const validated = NavigatorOutput.safeParse(parsed);
+      if (!validated.success) {
+        throw new Error(`Invalid navigator JSON schema: ${firstError(validated)}`);
+      }
+      parsedResults = validated.data;
     } catch (err) {
       console.warn('[navigator] Live inference failed. Falling back to deterministic mock:', err.message);
       parsedResults = JSON.parse(JSON.stringify(MOCK_MARCUS_RESULTS));
@@ -173,20 +94,20 @@ export async function runNavigator(intakeData) {
     parsedResults = JSON.parse(JSON.stringify(MOCK_MARCUS_RESULTS));
   }
 
-  // Ensure 3 roles exist and attach Unsplash photos concurrently
-  if (!parsedResults?.roles || !Array.isArray(parsedResults.roles) || parsedResults.roles.length === 0) {
-    parsedResults = JSON.parse(JSON.stringify(MOCK_MARCUS_RESULTS));
-  }
-
+  // Cap at 3 roles and attach Unsplash photos concurrently
+  const safeRoles = (parsedResults?.roles || []).slice(0, 3);
   const enrichedRoles = await Promise.all(
-    parsedResults.roles.map(async (role, idx) => {
-      const photo = await fetchRolePhoto(role.imageKeyword, idx);
+    safeRoles.map(async (role, idx) => {
+      const photo = role.photo?.url ? role.photo : await fetchRolePhoto(role.imageKeyword, idx);
       return {
         ...role,
+        id: role.id || `role-${idx + 1}`,
         photo,
       };
     })
   );
+
+  const isFallback = mode === 'live' && modelUsed === 'mock-fallback';
 
   return {
     ok: true,
@@ -196,20 +117,26 @@ export async function runNavigator(intakeData) {
       roles: enrichedRoles,
     },
     modelUsed,
-    mode: mode === 'live' && modelUsed !== 'mock-fallback' ? 'live' : 'mock',
+    mode: isFallback || mode !== 'live' ? 'mock' : 'live',
+    isFallback,
   };
 }
 
 function cleanJsonText(content) {
   let str = '';
   if (typeof content === 'string') str = content;
-  else if (Array.isArray(content)) str = content.map((c) => c.text || '').join('');
+  else if (Array.isArray(content)) str = content.map((c) => (c && c.text) || '').join('');
   else str = String(content || '');
 
-  // Strip ```json ... ``` wrapper if model emitted it
+  // Strip optional markdown code fences and isolate the outermost JSON object
   str = str.trim();
   if (str.startsWith('```')) {
-    str = str.replace(/^```(?:json)?\r?\n/, '').replace(/\r?\n```$/, '');
+    str = str.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  }
+  const firstBrace = str.indexOf('{');
+  const lastBrace = str.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    str = str.slice(firstBrace, lastBrace + 1);
   }
   return str.trim();
 }

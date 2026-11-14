@@ -46,6 +46,9 @@ export async function invokeWithCascade(messages, timeoutMs = 9000) {
     } catch (err) {
       lastError = err;
       const status = err?.status ?? err?.response?.status;
+      if (status === 400 || status === 401 || status === 403) {
+        throw err;
+      }
       console.warn(`[ai-cascade] Model ${modelName} returned status ${status || err.message}. Shifting to next cascade tier...`);
     }
   }
@@ -53,13 +56,22 @@ export async function invokeWithCascade(messages, timeoutMs = 9000) {
   throw lastError || new Error('All models in cascade failed.');
 }
 
-function invokeWithTimeout(model, messages, timeoutMs) {
-  return Promise.race([
-    model.invoke(messages),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(`Model response exceeded ${timeoutMs / 1000}s timeout`)), timeoutMs)
-    ),
-  ]);
+async function invokeWithTimeout(model, messages, timeoutMs) {
+  const controller = new AbortController();
+  let timer;
+  try {
+    return await Promise.race([
+      model.invoke(messages, { signal: controller.signal }),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          controller.abort();
+          reject(new Error(`Model response exceeded ${timeoutMs / 1000}s timeout`));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // Turn provider errors into messages a student can act on.

@@ -45,8 +45,32 @@ export const firstError = (result) => result.error.issues[0]?.message ?? 'Invali
 export const NavigateRequest = z.object({
   currentRole: z.string().trim().min(2, 'Please specify your current or past role.').max(120),
   dailyTasks: z.string().trim().min(5, 'Describe at least one or two daily tasks you handle.').max(1500),
-  superpowers: z.string().trim().min(2, 'Tell us at least one thing you do well with people or problems.').max(500),
-  drainers: z.string().trim().min(2, 'Mention at least one repetitive task that drains your energy.').max(500),
+  superpowers: z.string().trim().max(500).optional().default(''),
+  drainers: z.string().trim().max(500).optional().default(''),
   workPreference: z.string().trim().max(50).optional().default('Hybrid'),
   techComfort: z.string().trim().max(50).optional().default('Everyday user'),
+});
+
+const NavigatorToolSchema = z.object({
+  name: z.string().trim().min(1),
+  freeTier: z.string().trim().optional().default('Free tier available'),
+  useCase: z.string().trim().min(1),
+});
+
+const NavigatorRoleSchema = z.object({
+  id: z.string().trim().optional(),
+  roleTitle: z.string().trim().min(2),
+  onetCluster: z.string().trim().optional().default('AI-Augmented Career Direction'),
+  summary: z.string().trim().min(5),
+  keyTasks: z.array(z.string().trim().min(1)).min(1),
+  humanEdge: z.string().trim().min(5),
+  aiTools: z.array(NavigatorToolSchema).optional().default([]),
+  starterPrompt: z.string().trim().min(10),
+  imageKeyword: z.string().trim().optional().default('workplace professional'),
+});
+
+export const NavigatorOutput = z.object({
+  summary: z.string().trim().min(10),
+  transferableSkills: z.array(z.string().trim().min(1)).optional().default([]),
+  roles: z.array(NavigatorRoleSchema).min(1),
 });
